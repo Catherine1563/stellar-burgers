@@ -1,21 +1,51 @@
-import { FC, useMemo } from 'react';
+import { FC, useEffect, useMemo } from 'react';
 import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient } from '@utils-types';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../services/store';
+import { fetchAllIngredients } from '../../slices/allIngredientsSlice';
+import { fetchFeed, selectFeedByNumber } from '../../slices/feedModalSlice';
+import { useParams } from 'react-router-dom';
 
 export const OrderInfo: FC = () => {
   /** TODO: взять переменные orderData и ingredients из стора */
-  const orderData = {
-    createdAt: '',
-    ingredients: [],
-    _id: '',
-    status: '',
-    name: '',
-    updatedAt: 'string',
-    number: 0
-  };
+  const { number } = useParams<{ number: string }>();
+  const { orderData, isOrdersLoading } = useSelector(
+    (state: RootState) => state.feed_modal
+  );
+  const ingredients = useSelector(
+    (state: RootState) => state.all_ingredients.ingredients
+  );
+  const isRegisSuccess = useSelector(
+    (state: RootState) => state.register.isRegisSuccess
+  );
+  const isAuthSuccess = useSelector(
+    (state: RootState) => state.login.isAuthSuccess
+  );
+  const isLogout = useSelector((state: RootState) => state.logout.isLogout);
+  const isAuthenticated = (isAuthSuccess || isRegisSuccess) && !isLogout;
+  const dispatch = useDispatch<AppDispatch>();
 
-  const ingredients: TIngredient[] = [];
+  useEffect(() => {
+    if (!isAuthenticated) {
+      dispatch(fetchAllIngredients());
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (!isOrdersLoading && !orderData) {
+      dispatch(fetchFeed());
+    }
+  }, [dispatch, isOrdersLoading, orderData]);
+
+  useEffect(() => {
+    if (number) {
+      if (!isOrdersLoading) {
+        dispatch(selectFeedByNumber(parseInt(number)));
+      }
+    }
+  }, [dispatch, number, isOrdersLoading]);
 
   /* Готовим данные для отображения */
   const orderInfo = useMemo(() => {
