@@ -24,7 +24,7 @@ export const BurgerConstructor: FC = () => {
     (state: RootState) => state.login.isAuthSuccess
   );
   const isLogout = useSelector((state: RootState) => state.logout.isLogout);
-  const isAuthenticated = (isAuthSuccess || isRegisSuccess) && !isLogout;
+  const isAuthenticated = localStorage.getItem('isAuthenticated');
   const dispatch = useDispatch<AppDispatch>();
   const constructorItems = {
     bun: bun,
