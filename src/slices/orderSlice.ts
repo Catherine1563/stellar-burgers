@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { orderBurgerApi } from '@api'; // Убедитесь, что импорт правильный
-import { TIngredient, TOrder } from '@utils-types';
+import { TOrder } from '@utils-types';
 
 interface OrderState {
   orderRequest: boolean;
@@ -16,14 +16,9 @@ const initialState: OrderState = {
 
 export const fetchOrder = createAsyncThunk(
   'orders/fetchOrder',
-  async (ingredients: string[], { rejectWithValue }) => {
-    try {
-      const response = await orderBurgerApi(ingredients);
-      return response;
-    } catch (error) {
-      console.error('Server error:', error);
-      return rejectWithValue(error);
-    }
+  async (ingredients: string[]) => {
+    const response = await orderBurgerApi(ingredients);
+    return response;
   }
 );
 
@@ -52,7 +47,7 @@ const orderSlice = createSlice({
       })
       .addCase(fetchOrder.rejected, (state, action) => {
         state.orderRequest = false;
-        state.error = action.payload as string;
+        state.error = action.error.message || 'Something went wrong';
       });
   }
 });

@@ -1,12 +1,11 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { registerUserApi, updateUserApi, TRegisterData } from '@api';
+import { registerUserApi, TRegisterData } from '@api';
 import { TUser } from '@utils-types';
+import { setCookie } from '../utils/cookie';
 
 interface RegisterState {
   user: TUser | null;
   success: boolean;
-  refreshToken: string;
-  accessToken: string;
   isRegisSuccess: boolean;
   error: string | null;
 }
@@ -14,24 +13,20 @@ interface RegisterState {
 const initialState: RegisterState = {
   user: null,
   success: false,
-  refreshToken: '',
-  accessToken: '',
   isRegisSuccess: false,
   error: null
 };
 
 export const fetchRegisterUser = createAsyncThunk(
   'auth/register/fetchRegisterUser',
-  async (userData: TRegisterData, thunkAPI) => {
-    try {
-      const userResponse = await registerUserApi(userData);
+  async (userData: TRegisterData) => {
+    const userResponse = await registerUserApi(userData);
+    if (userResponse && userResponse.accessToken) {
+      setCookie('accessToken', userResponse.accessToken);
       localStorage.setItem('refreshToken', userResponse.refreshToken);
-      localStorage.setItem('accessToken', userResponse.accessToken);
       return userResponse;
-    } catch (error) {
-      console.error('Server error:', error);
-      return thunkAPI.rejectWithValue('Failed to fetch register user data');
     }
+    return userResponse;
   }
 );
 
@@ -41,25 +36,25 @@ const registerSlice = createSlice({
   reducers: {
     resetRegisState: (state) => {
       state.isRegisSuccess = false;
+      state.success = false;
     }
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchRegisterUser.pending, (state) => {
         state.isRegisSuccess = false;
+        state.success = false;
         state.error = null;
       })
       .addCase(fetchRegisterUser.fulfilled, (state, action) => {
         state.user = action.payload.user;
         state.success = action.payload.success;
-        state.accessToken = action.payload.accessToken;
-        state.refreshToken = action.payload.refreshToken;
         state.isRegisSuccess = true;
       })
       .addCase(fetchRegisterUser.rejected, (state, action) => {
-        state.success = true;
+        state.success = false;
         state.isRegisSuccess = false;
-        state.error = action.payload as string;
+        state.error = action.error.message || 'Something went wrong';
       });
   }
 });

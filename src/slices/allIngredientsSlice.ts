@@ -16,14 +16,9 @@ const initialState: allIngredientsState = {
 
 export const fetchAllIngredients = createAsyncThunk(
   'ingredients/fetchAllIngredients',
-  async (_, thunkAPI) => {
-    try {
-      const ingredients = await getIngredientsApi();
-      return ingredients;
-    } catch (error) {
-      console.error('Server error:', error);
-      return thunkAPI.rejectWithValue('Failed to fetch ingredients');
-    }
+  async () => {
+    const ingredients = await getIngredientsApi();
+    return ingredients;
   }
 );
 
@@ -44,7 +39,7 @@ const allIngredientsSlice = createSlice({
       })
       .addCase(fetchAllIngredients.rejected, (state, action) => {
         state.isIngredientsLoading = false;
-        state.error = action.payload as string;
+        state.error = action.error.message || 'Something went wrong';
       });
   }
 });

@@ -22,24 +22,16 @@ const initialState: feedState = {
   error: null
 };
 
-export const fetchFeed = createAsyncThunk(
-  '/orders/all/fetchFeed',
-  async (_, thunkAPI) => {
-    try {
-      const feeds = await getFeedsApi();
-      return {
-        orders: feeds.orders,
-        feed: {
-          total: feeds.total,
-          totalToday: feeds.totalToday
-        }
-      };
-    } catch (error) {
-      console.error('Server error:', error);
-      return thunkAPI.rejectWithValue('Failed to fetch orders');
+export const fetchFeed = createAsyncThunk('/orders/all/fetchFeed', async () => {
+  const feeds = await getFeedsApi();
+  return {
+    orders: feeds.orders,
+    feed: {
+      total: feeds.total,
+      totalToday: feeds.totalToday
     }
-  }
-);
+  };
+});
 
 const addFeedSlice = createSlice({
   name: 'add_feed',
@@ -60,7 +52,7 @@ const addFeedSlice = createSlice({
       })
       .addCase(fetchFeed.rejected, (state, action) => {
         state.isOrdersLoading = false;
-        state.error = action.payload as string;
+        state.error = action.error.message || 'Something went wrong';
       });
   }
 });

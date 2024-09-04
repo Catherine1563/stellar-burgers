@@ -6,7 +6,7 @@ interface IngredientsState {
   buns: TIngredient[];
   mains: TIngredient[];
   sauces: TIngredient[];
-  isIngredientsLoading: boolean;
+  isLoading: boolean;
   error: string | null;
 }
 
@@ -14,20 +14,15 @@ const initialState: IngredientsState = {
   buns: [],
   mains: [],
   sauces: [],
-  isIngredientsLoading: false,
+  isLoading: false,
   error: null
 };
 
 export const fetchIngredients = createAsyncThunk(
   'ingredients/fetchIngredients',
-  async (_, thunkAPI) => {
-    try {
-      const ingredients = await getIngredientsApi();
-      return ingredients;
-    } catch (error) {
-      console.error('Server error:', error);
-      return thunkAPI.rejectWithValue('Failed to fetch ingredients');
-    }
+  async () => {
+    const ingredients = await getIngredientsApi();
+    return ingredients;
   }
 );
 
@@ -38,19 +33,19 @@ const allIngredientsCategorySlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchIngredients.pending, (state) => {
-        state.isIngredientsLoading = true;
+        state.isLoading = true;
         state.error = null;
       })
       .addCase(fetchIngredients.fulfilled, (state, action) => {
-        state.isIngredientsLoading = false;
+        state.isLoading = false;
         const ingredients = action.payload as TIngredient[];
         state.buns = ingredients.filter((item) => item.type === 'bun');
         state.mains = ingredients.filter((item) => item.type === 'main');
         state.sauces = ingredients.filter((item) => item.type === 'sauce');
       })
       .addCase(fetchIngredients.rejected, (state, action) => {
-        state.isIngredientsLoading = false;
-        state.error = action.payload as string;
+        state.isLoading = false;
+        state.error = action.error.message || 'Something went wrong';
       });
   }
 });

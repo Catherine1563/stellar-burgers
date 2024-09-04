@@ -1,20 +1,21 @@
 import { FC, SyntheticEvent, useEffect, useState } from 'react';
 import { RegisterUI } from '@ui-pages';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../services/store';
-import { TRegisterData } from '@api';
+import { refreshToken, registerUserApi, TRegisterData } from '@api';
 import { fetchRegisterUser } from '../../slices/registerSlice';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from '../../services/store';
+import { getCookie, setCookie } from '../../utils/cookie';
+import { createAsyncThunk } from '@reduxjs/toolkit';
 
 export const Register: FC = () => {
   const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const success = useSelector((state: RootState) => state.register.success);
-  const dispatch = useDispatch<AppDispatch>();
+  const success = useSelector((state) => state.register.success);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: SyntheticEvent) => {
+  const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
     if (userName !== '' || email !== '' || password !== '') {
       const userData: TRegisterData = {
@@ -28,7 +29,7 @@ export const Register: FC = () => {
   useEffect(() => {
     if (success) {
       navigate('/');
-      localStorage.setItem('isAuthenticated', success.toString());
+      window.location.reload();
     }
   }, [success, navigate]);
 

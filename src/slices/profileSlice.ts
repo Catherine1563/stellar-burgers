@@ -1,7 +1,6 @@
-import { getUserApi, refreshToken } from '@api';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { TUser } from '@utils-types';
-import { getCookie } from '../utils/cookie';
+import { getUserApi } from '@api';
 
 interface ProfileState {
   user: TUser;
@@ -12,43 +11,18 @@ interface ProfileState {
 
 const initialState: ProfileState = {
   user: {
-    name: '',
-    email: ''
+    email: '',
+    name: ''
   },
   success: false,
   loading: false,
   error: null
 };
 
-export const refreshUserToken = createAsyncThunk(
-  'auth/token/refreshToken',
-  async (_, thunkAPI) => {
-    try {
-      const refreshData = await refreshToken();
-      return refreshData;
-    } catch (error) {
-      console.error('Server error:', error);
-      return thunkAPI.rejectWithValue('Failed to refresh token');
-    }
-  }
-);
-
-export const fetchUser = createAsyncThunk(
-  'auth/user/fetchUser',
-  async (_, thunkAPI) => {
-    try {
-      const token = getCookie('accessToken');
-      if (!token) {
-        await thunkAPI.dispatch(refreshUserToken());
-      }
-      const userResponse = await getUserApi();
-      return userResponse;
-    } catch (error) {
-      console.error('Server error:', error);
-      return thunkAPI.rejectWithValue('Failed to fetch user data');
-    }
-  }
-);
+export const fetchUser = createAsyncThunk('auth/user/fetchUser', async () => {
+  const userResponse = await getUserApi();
+  return userResponse;
+});
 
 const profileSlice = createSlice({
   name: 'profile',
@@ -71,7 +45,7 @@ const profileSlice = createSlice({
       })
       .addCase(fetchUser.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload as string;
+        state.error = (action.payload as string) || 'Something went wrong';
       });
   }
 });

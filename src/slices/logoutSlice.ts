@@ -1,5 +1,6 @@
 import { logoutApi } from '@api';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { deleteCookie } from '../utils/cookie';
 
 interface LogoutState {
   isLogout: boolean;
@@ -13,28 +14,18 @@ const initialState: LogoutState = {
 
 export const featchLogout = createAsyncThunk(
   'auth/logout/featchLogout',
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await logoutApi();
-      if (!response.success) {
-        throw new Error('Logout failed');
-      }
-      return response;
-    } catch (error) {
-      console.error('Server error:', error);
-      return rejectWithValue(error);
-    }
+  async () => {
+    const response = await logoutApi();
+    deleteCookie('accessToken');
+    localStorage.removeItem('refreshToken');
+    return response;
   }
 );
 
 const logoutSlice = createSlice({
   name: 'logout',
   initialState,
-  reducers: {
-    resetLogoutState: (state) => {
-      state.isLogout = true;
-    }
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(featchLogout.pending, (state) => {
@@ -46,10 +37,9 @@ const logoutSlice = createSlice({
       })
       .addCase(featchLogout.rejected, (state, action) => {
         state.isLogout = false;
-        state.error = action.payload as string;
+        state.error = action.error.message || 'Something went wrong';
       });
   }
 });
 
-export const { resetLogoutState } = logoutSlice.actions;
 export default logoutSlice.reducer;

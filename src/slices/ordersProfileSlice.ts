@@ -16,14 +16,9 @@ const initialState: ordersProfileState = {
 
 export const fetchOrdersProfile = createAsyncThunk(
   'orders/fetchOrdersProfile',
-  async (_, thunkAPI) => {
-    try {
-      const orders = await getOrdersApi();
-      return orders;
-    } catch (error) {
-      console.error('Server error:', error);
-      return thunkAPI.rejectWithValue('Failed to fetch orders profile');
-    }
+  async () => {
+    const orders = await getOrdersApi();
+    return orders;
   }
 );
 
@@ -42,7 +37,7 @@ const ordersProfileSlice = createSlice({
       })
       .addCase(fetchOrdersProfile.rejected, (state, action) => {
         state.isOrdersLoading = false;
-        state.error = action.payload as string;
+        state.error = action.error.message || 'Something went wrong';
       });
   }
 });

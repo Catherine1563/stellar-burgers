@@ -1,38 +1,28 @@
 import { FC, useMemo } from 'react';
 import { BurgerConstructorUI } from '@ui';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from 'src/services/store';
 import { resetIngredients } from '../../slices/addIngredientSlice';
 import {
   fetchOrder,
   handleOrderClick,
   resetOrder
 } from '../../slices/orderSlice';
+import { useDispatch, useSelector } from '../../services/store';
+import { useNavigate } from 'react-router-dom';
 
 export const BurgerConstructor: FC = () => {
   /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора */
-  const { bun, arrIngredients } = useSelector(
-    (state: RootState) => state.add_ingredient
-  );
-  const { orderModalData, orderRequest } = useSelector(
-    (state: RootState) => state.order
-  );
-  const isRegisSuccess = useSelector(
-    (state: RootState) => state.register.isRegisSuccess
-  );
-  const isAuthSuccess = useSelector(
-    (state: RootState) => state.login.isAuthSuccess
-  );
-  const isLogout = useSelector((state: RootState) => state.logout.isLogout);
-  const isAuthenticated = localStorage.getItem('isAuthenticated');
-  const dispatch = useDispatch<AppDispatch>();
+  const { bun, arrIngredients } = useSelector((state) => state.add_ingredient);
+  const { orderModalData, orderRequest } = useSelector((state) => state.order);
+  const navigate = useNavigate();
+  const isLoggedIn = useSelector((state) => state.logged_in.isLoggedIn);
+  const dispatch = useDispatch();
   const constructorItems = {
     bun: bun,
     ingredients: arrIngredients
   };
 
   const onOrderClick = () => {
-    if (isAuthenticated) {
+    if (isLoggedIn) {
       if (constructorItems.bun && constructorItems.ingredients.length > 0) {
         const ingredientsIds = [
           constructorItems.bun ? constructorItems.bun._id : null,
@@ -45,6 +35,8 @@ export const BurgerConstructor: FC = () => {
           dispatch(fetchOrder(ingredientsIds));
         }
       }
+    } else {
+      navigate('/login');
     }
   };
 

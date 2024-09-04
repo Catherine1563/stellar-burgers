@@ -16,16 +16,11 @@ const initialState: IngredientModalState = {
   error: null
 };
 
-export const fetchIngredients = createAsyncThunk(
+export const fetchIngredientsModal = createAsyncThunk(
   'ingredients/fetchIngredientsModal',
-  async (_, thunkAPI) => {
-    try {
-      const ingredients = await getIngredientsApi();
-      return ingredients;
-    } catch (error) {
-      console.error('Server error:', error);
-      return thunkAPI.rejectWithValue('Failed to fetch ingredients');
-    }
+  async () => {
+    const ingredients = await getIngredientsApi();
+    return ingredients;
   }
 );
 
@@ -45,18 +40,18 @@ const ingredientModalSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchIngredients.pending, (state) => {
+      .addCase(fetchIngredientsModal.pending, (state) => {
         state.isIngredientsLoading = true;
         state.error = null;
       })
-      .addCase(fetchIngredients.fulfilled, (state, action) => {
+      .addCase(fetchIngredientsModal.fulfilled, (state, action) => {
         state.isIngredientsLoading = false;
         const ingredients = action.payload as TIngredient[];
         state.ingredientsModal = ingredients;
       })
-      .addCase(fetchIngredients.rejected, (state, action) => {
+      .addCase(fetchIngredientsModal.rejected, (state, action) => {
         state.isIngredientsLoading = false;
-        state.error = action.payload as string;
+        state.error = action.error.message || 'Something went wrong';
       });
   }
 });

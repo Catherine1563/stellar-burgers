@@ -2,36 +2,25 @@ import { FC, useEffect, useMemo } from 'react';
 import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient } from '@utils-types';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../services/store';
 import { fetchAllIngredients } from '../../slices/allIngredientsSlice';
 import { fetchFeed, selectFeedByNumber } from '../../slices/feedModalSlice';
 import { useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from '../../services/store';
 
 export const OrderInfo: FC = () => {
   /** TODO: взять переменные orderData и ingredients из стора */
   const { number } = useParams<{ number: string }>();
   const { orderData, isOrdersLoading } = useSelector(
-    (state: RootState) => state.feed_modal
+    (state) => state.feed_modal
   );
-  const ingredients = useSelector(
-    (state: RootState) => state.all_ingredients.ingredients
-  );
-  const isRegisSuccess = useSelector(
-    (state: RootState) => state.register.isRegisSuccess
-  );
-  const isAuthSuccess = useSelector(
-    (state: RootState) => state.login.isAuthSuccess
-  );
-  const isLogout = useSelector((state: RootState) => state.logout.isLogout);
-  const isAuthenticated = (isAuthSuccess || isRegisSuccess) && !isLogout;
-  const dispatch = useDispatch<AppDispatch>();
+  const ingredients = useSelector((state) => state.all_ingredients.ingredients);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!ingredients.length) {
       dispatch(fetchAllIngredients());
     }
-  }, [dispatch]);
+  }, [dispatch, ingredients.length]);
 
   useEffect(() => {
     if (!isOrdersLoading && !orderData) {

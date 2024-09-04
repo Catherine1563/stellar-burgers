@@ -1,16 +1,15 @@
 import { FC, SyntheticEvent, useEffect, useState } from 'react';
 import { LoginUI } from '@ui-pages';
-import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { AppDispatch, RootState } from '../../services/store';
 import { TLoginData } from '@api';
 import { featchloginUser } from '../../slices/loginUserSlice';
+import { useDispatch, useSelector } from '../../services/store';
 
 export const Login: FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const success = useSelector((state: RootState) => state.login.success);
-  const dispatch = useDispatch<AppDispatch>();
+  const success = useSelector((state) => state.login.success);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleSubmit = (e: SyntheticEvent) => {
@@ -26,8 +25,8 @@ export const Login: FC = () => {
 
   useEffect(() => {
     if (success) {
-      localStorage.setItem('isAuthenticated', success.toString());
       navigate('/');
+      window.location.reload();
     }
   }, [success, navigate]);
 

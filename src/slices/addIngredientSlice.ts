@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { TIngredient, TOrder } from '@utils-types';
+import { v4 as uuid4 } from 'uuid';
+import { TIngredient } from '@utils-types';
 
 interface addIngredientState {
   bun:
@@ -24,21 +25,23 @@ const addIngredientSlice = createSlice({
   name: 'add_ingredient',
   initialState,
   reducers: {
-    handleAddIngredient(state, action: PayloadAction<TIngredient | null>) {
-      if (action.payload) {
-        if (
-          action.payload._id === '643d69a5c3f7b9001cfa093d' ||
-          action.payload._id === '643d69a5c3f7b9001cfa093c'
-        ) {
-          state.bun = {
-            _id: action.payload._id,
-            name: action.payload.name,
-            image: action.payload.image,
-            price: action.payload.price
-          };
-        } else {
-          state.arrIngredients.push(action.payload);
+    handleAddIngredient: {
+      reducer(state, action: PayloadAction<TIngredient | null>) {
+        if (action.payload) {
+          if (action.payload.type === 'bun') {
+            state.bun = {
+              _id: action.payload._id,
+              name: action.payload.name,
+              image: action.payload.image,
+              price: action.payload.price
+            };
+          } else {
+            state.arrIngredients.push(action.payload);
+          }
         }
+      },
+      prepare(ingredient: TIngredient) {
+        return { payload: { ...ingredient, id: uuid4() } };
       }
     },
     resetIngredients(state) {
