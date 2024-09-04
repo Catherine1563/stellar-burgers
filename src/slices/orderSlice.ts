@@ -1,5 +1,5 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { orderBurgerApi } from '@api'; // Убедитесь, что импорт правильный
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { orderBurgerApi } from '@api';
 import { TOrder } from '@utils-types';
 
 interface OrderState {

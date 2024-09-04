@@ -1,11 +1,9 @@
 import { FC, SyntheticEvent, useEffect, useState } from 'react';
 import { RegisterUI } from '@ui-pages';
-import { refreshToken, registerUserApi, TRegisterData } from '@api';
+import { TRegisterData } from '@api';
 import { fetchRegisterUser } from '../../slices/registerSlice';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from '../../services/store';
-import { getCookie, setCookie } from '../../utils/cookie';
-import { createAsyncThunk } from '@reduxjs/toolkit';
 
 export const Register: FC = () => {
   const [userName, setUserName] = useState('');

@@ -1,6 +1,6 @@
 import { Preloader } from '@ui';
 import { FeedUI } from '@ui-pages';
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect } from 'react';
 import { fetchFeed } from '../../slices/addFeedSlice';
 import { useDispatch, useSelector } from '../../services/store';
 

@@ -1,4 +1,4 @@
-import { loginUserApi, refreshToken, TLoginData } from '@api';
+import { loginUserApi, TLoginData } from '@api';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { TUser } from '@utils-types';
 import { setCookie } from '../utils/cookie';

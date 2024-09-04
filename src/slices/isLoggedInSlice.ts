@@ -45,7 +45,7 @@ const isLoggedInSlice = createSlice({
       .addCase(checkTokens.rejected, (state, action) => {
         state.isLoggedIn = false;
         state.checkingStatus = false;
-        state.error = action.payload as string;
+        state.error = action.error.message || 'Something went wrong';
       });
   }
 });
