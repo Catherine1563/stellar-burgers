@@ -3,38 +3,66 @@ import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient } from '@utils-types';
 import { fetchAllIngredients } from '../../slices/allIngredientsSlice';
-import { fetchFeed, selectFeedByNumber } from '../../slices/feedModalSlice';
-import { useParams } from 'react-router-dom';
+import {
+  clearFeed,
+  fetchFeed,
+  selectFeedByNumber
+} from '../../slices/feedModalSlice';
+import { useLocation, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from '../../services/store';
+import { clearOrder, fetchOrderByNumber } from '../../slices/orderNumberSlice';
 
 export const OrderInfo: FC = () => {
   /** TODO: взять переменные orderData и ingredients из стора */
   const { number } = useParams<{ number: string }>();
-  const { orderData, isOrdersLoading } = useSelector(
-    (state) => state.feed_modal
-  );
+  const location = useLocation();
+  const isLoggedIn = useSelector((state) => state.logged_in.isLoggedIn);
   const ingredients = useSelector((state) => state.all_ingredients.ingredients);
   const dispatch = useDispatch();
+
+  const isFeedRoute = useMemo(
+    () => location.pathname.startsWith('/feed'),
+    [location.pathname]
+  );
+  const isProfileRoute = useMemo(
+    () => location.pathname.startsWith('/profile/order'),
+    [location.pathname]
+  );
+
+  const { orderData, isLoading } = useSelector((state) => {
+    if (isFeedRoute) {
+      return {
+        orderData: state.feed_modal.orderData,
+        isLoading: state.feed_modal.isLoading
+      };
+    } else if (isProfileRoute && isLoggedIn) {
+      return {
+        orderData: state.order_number.orderData,
+        isLoading: state.order_number.isLoading
+      };
+    }
+    return { orderData: null, isLoading: true };
+  });
+
+  useEffect(() => {
+    if (number) {
+      if (isFeedRoute) {
+        dispatch(clearFeed());
+        dispatch(fetchFeed()).then(() => {
+          dispatch(selectFeedByNumber(parseInt(number)));
+        });
+      } else if (isProfileRoute && isLoggedIn) {
+        dispatch(clearOrder());
+        dispatch(fetchOrderByNumber(parseInt(number)));
+      }
+    }
+  }, [dispatch, number, isFeedRoute, isProfileRoute, isLoggedIn]);
 
   useEffect(() => {
     if (!ingredients.length) {
       dispatch(fetchAllIngredients());
     }
   }, [dispatch, ingredients.length]);
-
-  useEffect(() => {
-    if (!isOrdersLoading && !orderData) {
-      dispatch(fetchFeed());
-    }
-  }, [dispatch, isOrdersLoading, orderData]);
-
-  useEffect(() => {
-    if (number) {
-      if (!isOrdersLoading) {
-        dispatch(selectFeedByNumber(parseInt(number)));
-      }
-    }
-  }, [dispatch, number, isOrdersLoading]);
 
   /* Готовим данные для отображения */
   const orderInfo = useMemo(() => {

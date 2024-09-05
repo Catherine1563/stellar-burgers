@@ -18,6 +18,7 @@ import logoutReducer from '../slices/logoutSlice';
 import orderReducer from '../slices/orderSlice';
 import ordersProfileReducer from '../slices/ordersProfileSlice';
 import isLoggedInReducer from '../slices/isLoggedInSlice';
+import orderNumberReducer from '../slices/orderNumberSlice';
 
 const rootReducer = {
   ingredients: ingredientsReducer,
@@ -32,7 +33,8 @@ const rootReducer = {
   logout: logoutReducer,
   order: orderReducer,
   orders_profile: ordersProfileReducer,
-  logged_in: isLoggedInReducer
+  logged_in: isLoggedInReducer,
+  order_number: orderNumberReducer
 };
 
 const store = configureStore({

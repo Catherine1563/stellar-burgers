@@ -9,7 +9,7 @@ interface feedModalState {
     total: number;
     totalToday: number;
   };
-  isOrdersLoading: boolean;
+  isLoading: boolean;
   error: string | null;
 }
 
@@ -20,7 +20,7 @@ const initialState: feedModalState = {
     total: 0,
     totalToday: 0
   },
-  isOrdersLoading: false,
+  isLoading: false,
   error: null
 };
 
@@ -46,27 +46,31 @@ const feedModalSlice = createSlice({
       const number = action.payload;
       state.orderData =
         state.orders.find((order) => order.number === number) || null;
+    },
+    clearFeed(state) {
+      state.orderData = null;
     }
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchFeed.pending, (state) => {
-        state.isOrdersLoading = true;
+        state.isLoading = true;
         state.error = null;
       })
       .addCase(fetchFeed.fulfilled, (state, action) => {
-        state.isOrdersLoading = false;
+        state.isLoading = false;
         const { orders, feed } = action.payload;
         state.orders = orders;
         state.feed.total = feed.total;
         state.feed.totalToday = feed.totalToday;
       })
       .addCase(fetchFeed.rejected, (state, action) => {
-        state.isOrdersLoading = false;
+        state.isLoading = false;
         state.error = action.error.message || 'Something went wrong';
       });
   }
 });
 
-export const { setSelectedFeed, selectFeedByNumber } = feedModalSlice.actions;
+export const { setSelectedFeed, selectFeedByNumber, clearFeed } =
+  feedModalSlice.actions;
 export default feedModalSlice.reducer;

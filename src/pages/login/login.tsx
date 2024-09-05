@@ -26,7 +26,6 @@ export const Login: FC = () => {
   useEffect(() => {
     if (success) {
       navigate('/');
-      window.location.reload();
     }
   }, [success, navigate]);
 

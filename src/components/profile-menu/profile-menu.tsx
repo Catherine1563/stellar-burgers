@@ -17,7 +17,6 @@ export const ProfileMenu: FC = () => {
         dispatch(resetLoginState());
         dispatch(resetRegisState());
         navigate('/');
-        window.location.reload();
       }
     });
   };

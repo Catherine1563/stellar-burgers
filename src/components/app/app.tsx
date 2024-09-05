@@ -21,9 +21,8 @@ import {
   useNavigate
 } from 'react-router-dom';
 import { useDispatch, useSelector } from '../../services/store';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { fetchIngredients } from '../../slices/allIngredientsCategorySlice';
-import { fetchIngredientsModal } from '../../slices/ingredientModalSlice';
 import { checkTokens } from '../../slices/isLoggedInSlice';
 import React from 'react';
 import { Preloader } from '@ui';
@@ -37,13 +36,19 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element }) => {
   const { isLoggedIn, checkingStatus } = useSelector(
     (state) => state.logged_in
   );
+  const [isAuthChecked, setIsAuthChecked] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(checkTokens());
+    const checkAuthStatus = async () => {
+      await dispatch(checkTokens());
+      setIsAuthChecked(true);
+    };
+
+    checkAuthStatus();
   }, [dispatch]);
 
-  if (checkingStatus) {
+  if (checkingStatus || !isAuthChecked) {
     return <Preloader />;
   }
 
@@ -58,20 +63,11 @@ export const App = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const background = location.state?.background;
-  const { selectedIngredient, isIngredientsLoading } = useSelector(
-    (state) => state.ingredient_modal
-  );
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchIngredients());
   }, [dispatch]);
-
-  useEffect(() => {
-    if (!isIngredientsLoading && !selectedIngredient) {
-      dispatch(fetchIngredientsModal());
-    }
-  }, [dispatch, isIngredientsLoading, selectedIngredient]);
 
   const handleModalClose = () => {
     navigate(-1);
