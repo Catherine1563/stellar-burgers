@@ -3,13 +3,13 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { TOrder } from '@utils-types';
 
 interface OrderState {
-  orderData: TOrder | null;
+  orderProfile: TOrder | null;
   isLoading: boolean;
   error: string | null;
 }
 
 const initialState: OrderState = {
-  orderData: null,
+  orderProfile: null,
   isLoading: false,
   error: null
 };
@@ -27,7 +27,7 @@ const orderNumberSlice = createSlice({
   initialState,
   reducers: {
     clearOrder(state) {
-      state.orderData = null;
+      state.orderProfile = null;
     }
   },
   extraReducers: (builder) => {
@@ -38,7 +38,7 @@ const orderNumberSlice = createSlice({
       })
       .addCase(fetchOrderByNumber.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.orderData = action.payload;
+        state.orderProfile = action.payload;
       })
       .addCase(fetchOrderByNumber.rejected, (state, action) => {
         state.isLoading = false;

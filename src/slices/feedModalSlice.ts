@@ -4,7 +4,7 @@ import { TOrder } from '@utils-types';
 
 interface feedModalState {
   orders: TOrder[];
-  orderData: TOrder | null;
+  orderFeed: TOrder | null;
   feed: {
     total: number;
     totalToday: number;
@@ -15,7 +15,7 @@ interface feedModalState {
 
 const initialState: feedModalState = {
   orders: [],
-  orderData: null,
+  orderFeed: null,
   feed: {
     total: 0,
     totalToday: 0
@@ -40,15 +40,15 @@ const feedModalSlice = createSlice({
   initialState,
   reducers: {
     setSelectedFeed(state, action: PayloadAction<TOrder | null>) {
-      state.orderData = action.payload;
+      state.orderFeed = action.payload;
     },
     selectFeedByNumber(state, action: PayloadAction<number>) {
       const number = action.payload;
-      state.orderData =
+      state.orderFeed =
         state.orders.find((order) => order.number === number) || null;
     },
     clearFeed(state) {
-      state.orderData = null;
+      state.orderFeed = null;
     }
   },
   extraReducers: (builder) => {

@@ -67,6 +67,7 @@ export const App = () => {
 
   useEffect(() => {
     dispatch(fetchIngredients());
+    dispatch(checkTokens());
   }, [dispatch]);
 
   const handleModalClose = () => {

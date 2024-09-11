@@ -1,7 +1,7 @@
 import { FC, useEffect, useMemo } from 'react';
 import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
-import { TIngredient } from '@utils-types';
+import { TIngredient, TOrder } from '@utils-types';
 import { fetchAllIngredients } from '../../slices/allIngredientsSlice';
 import {
   clearFeed,
@@ -18,6 +18,8 @@ export const OrderInfo: FC = () => {
   const location = useLocation();
   const isLoggedIn = useSelector((state) => state.logged_in.isLoggedIn);
   const ingredients = useSelector((state) => state.all_ingredients.ingredients);
+  const orderFeed = useSelector((state) => state.feed_modal.orderFeed);
+  const orderProfile = useSelector((state) => state.order_number.orderProfile);
   const dispatch = useDispatch();
 
   const isFeedRoute = useMemo(
@@ -28,21 +30,6 @@ export const OrderInfo: FC = () => {
     () => location.pathname.startsWith('/profile/order'),
     [location.pathname]
   );
-
-  const { orderData, isLoading } = useSelector((state) => {
-    if (isFeedRoute) {
-      return {
-        orderData: state.feed_modal.orderData,
-        isLoading: state.feed_modal.isLoading
-      };
-    } else if (isProfileRoute && isLoggedIn) {
-      return {
-        orderData: state.order_number.orderData,
-        isLoading: state.order_number.isLoading
-      };
-    }
-    return { orderData: null, isLoading: true };
-  });
 
   useEffect(() => {
     if (number) {
@@ -63,6 +50,12 @@ export const OrderInfo: FC = () => {
       dispatch(fetchAllIngredients());
     }
   }, [dispatch, ingredients.length]);
+
+  const orderData = isFeedRoute
+    ? orderFeed
+    : isProfileRoute
+      ? orderProfile
+      : null;
 
   /* Готовим данные для отображения */
   const orderInfo = useMemo(() => {

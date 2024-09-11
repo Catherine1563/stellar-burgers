@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { TLoginData } from '@api';
 import { featchloginUser } from '../../slices/loginUserSlice';
 import { useDispatch, useSelector } from '../../services/store';
+import { checkTokens } from '../../slices/isLoggedInSlice';
 
 export const Login: FC = () => {
   const [email, setEmail] = useState('');
@@ -25,6 +26,7 @@ export const Login: FC = () => {
 
   useEffect(() => {
     if (success) {
+      dispatch(checkTokens());
       navigate('/');
     }
   }, [success, navigate]);

@@ -4,6 +4,7 @@ import { TRegisterData } from '@api';
 import { fetchRegisterUser } from '../../slices/registerSlice';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from '../../services/store';
+import { checkTokens } from '../../slices/isLoggedInSlice';
 
 export const Register: FC = () => {
   const [userName, setUserName] = useState('');
@@ -26,6 +27,7 @@ export const Register: FC = () => {
   };
   useEffect(() => {
     if (success) {
+      dispatch(checkTokens());
       navigate('/');
     }
   }, [success, navigate]);
