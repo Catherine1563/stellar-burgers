@@ -3,14 +3,12 @@ import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient } from '@utils-types';
 import { fetchAllIngredients } from '../../slices/allIngredientsSlice';
-import {
-  clearFeed,
-  fetchFeed,
-  selectFeedByNumber
-} from '../../slices/feedModalSlice';
+import { selectFeedByNumber } from '../../slices/feedModalSlice';
 import { useLocation, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from '../../services/store';
-import { clearOrder, fetchOrderByNumber } from '../../slices/orderNumberSlice';
+import { fetchOrderByNumber } from '../../slices/orderNumberSlice';
+import { fetchFeed } from '../../slices/addFeedSlice';
+import { selectOrderByNumber } from '../../slices/profileModalSlice';
 
 export const OrderInfo: FC = () => {
   /** TODO: взять переменные orderData и ingredients из стора */
@@ -19,6 +17,13 @@ export const OrderInfo: FC = () => {
   const ingredients = useSelector((state) => state.all_ingredients.ingredients);
   const orderFeed = useSelector((state) => state.feed_modal.orderFeed);
   const orderProfile = useSelector((state) => state.order_number.orderProfile);
+  const orderProfileModal = useSelector(
+    (state) => state.profile_modal.orderProfileModal
+  );
+  const ordersFeed = useSelector((state) => state.add_feed.ordersFeed);
+  const ordersProfile = useSelector(
+    (state) => state.orders_profile.ordersProfile
+  );
   const dispatch = useDispatch();
 
   const isFeedRoute = useMemo(
@@ -32,16 +37,26 @@ export const OrderInfo: FC = () => {
 
   useEffect(() => {
     if (number) {
+      const parsedNumber = parseInt(number);
+
       if (isFeedRoute) {
-        dispatch(clearFeed());
-        dispatch(fetchFeed());
-        dispatch(selectFeedByNumber(parseInt(number)));
+        if (ordersFeed.length === 0) {
+          dispatch(fetchFeed());
+        }
+        dispatch(
+          selectFeedByNumber({ index: parsedNumber, orders: ordersFeed })
+        );
       } else if (isProfileRoute) {
-        dispatch(clearOrder());
-        dispatch(fetchOrderByNumber(parseInt(number)));
+        if (ordersProfile.length === 0) {
+          dispatch(fetchOrderByNumber(parsedNumber));
+        } else {
+          dispatch(
+            selectOrderByNumber({ index: parsedNumber, orders: ordersProfile })
+          );
+        }
       }
     }
-  }, [dispatch, number, isFeedRoute, isProfileRoute]);
+  }, [dispatch, number, isFeedRoute, isProfileRoute, ordersFeed]);
 
   useEffect(() => {
     if (!ingredients.length) {
@@ -51,9 +66,11 @@ export const OrderInfo: FC = () => {
 
   const orderData = isFeedRoute
     ? orderFeed
-    : isProfileRoute
-      ? orderProfile
-      : null;
+    : isProfileRoute && ordersProfile.length > 0
+      ? orderProfileModal
+      : isProfileRoute && ordersProfile.length === 0
+        ? orderProfile
+        : null;
 
   /* Готовим данные для отображения */
   const orderInfo = useMemo(() => {

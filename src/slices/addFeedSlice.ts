@@ -3,7 +3,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { TOrder } from '@utils-types';
 
 interface feedState {
-  orders: TOrder[];
+  ordersFeed: TOrder[];
   feed: {
     total: number;
     totalToday: number;
@@ -13,7 +13,7 @@ interface feedState {
 }
 
 const initialState: feedState = {
-  orders: [],
+  ordersFeed: [],
   feed: {
     total: 0,
     totalToday: 0
@@ -40,13 +40,13 @@ const addFeedSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchFeed.pending, (state) => {
-        state.isOrdersLoading = true;
+        state.isOrdersLoading = false;
         state.error = null;
       })
       .addCase(fetchFeed.fulfilled, (state, action) => {
-        state.isOrdersLoading = false;
+        state.isOrdersLoading = true;
         const { orders, feed } = action.payload;
-        state.orders = orders;
+        state.ordersFeed = orders;
         state.feed.total = feed.total;
         state.feed.totalToday = feed.totalToday;
       })

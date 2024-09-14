@@ -6,21 +6,23 @@ import { useDispatch, useSelector } from '../../services/store';
 
 export const ProfileOrders: FC = () => {
   /** TODO: взять переменную из стора */
-  const orders = useSelector((state) => state.orders_profile.orders);
+  const ordersProfile = useSelector(
+    (state) => state.orders_profile.ordersProfile
+  );
   const isOrdersLoading = useSelector(
     (state) => state.orders_profile.isOrdersLoading
   );
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (orders.length === 0) {
+    if (ordersProfile.length === 0) {
       dispatch(fetchOrdersProfile());
     }
-  }, [dispatch, orders.length]);
+  }, [dispatch, ordersProfile.length]);
 
   if (isOrdersLoading) {
     return <Preloader />;
   }
 
-  return <ProfileOrdersUI orders={orders} />;
+  return <ProfileOrdersUI orders={ordersProfile} />;
 };

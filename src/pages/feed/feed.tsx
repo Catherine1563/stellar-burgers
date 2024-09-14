@@ -6,25 +6,25 @@ import { useDispatch, useSelector } from '../../services/store';
 
 export const Feed: FC = () => {
   /** TODO: взять переменную из стора */
-  const orders = useSelector((state) => state.add_feed.orders);
+  const ordersFeed = useSelector((state) => state.add_feed.ordersFeed);
   const isOrdersLoading = useSelector(
     (state) => state.add_feed.isOrdersLoading
   );
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (orders.length === 0) {
+    if (ordersFeed.length === 0) {
       dispatch(fetchFeed());
     }
-  }, [dispatch, orders.length]);
+  }, [dispatch, ordersFeed.length]);
 
-  if (isOrdersLoading) {
+  if (!isOrdersLoading) {
     return <Preloader />;
   }
 
   return (
     <FeedUI
-      orders={orders}
+      orders={ordersFeed}
       handleGetFeeds={() => {
         dispatch(fetchFeed());
       }}

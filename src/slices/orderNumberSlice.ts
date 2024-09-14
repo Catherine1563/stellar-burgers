@@ -4,13 +4,13 @@ import { TOrder } from '@utils-types';
 
 interface OrderState {
   orderProfile: TOrder | null;
-  isLoading: boolean;
+  isLoadingOrders: boolean;
   error: string | null;
 }
 
 const initialState: OrderState = {
   orderProfile: null,
-  isLoading: false,
+  isLoadingOrders: false,
   error: null
 };
 
@@ -25,27 +25,22 @@ export const fetchOrderByNumber = createAsyncThunk(
 const orderNumberSlice = createSlice({
   name: 'order_number',
   initialState,
-  reducers: {
-    clearOrder(state) {
-      state.orderProfile = null;
-    }
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchOrderByNumber.pending, (state) => {
-        state.isLoading = true;
+        state.isLoadingOrders = false;
         state.error = null;
       })
       .addCase(fetchOrderByNumber.fulfilled, (state, action) => {
-        state.isLoading = false;
+        state.isLoadingOrders = true;
         state.orderProfile = action.payload;
       })
       .addCase(fetchOrderByNumber.rejected, (state, action) => {
-        state.isLoading = false;
+        state.isLoadingOrders = false;
         state.error = action.error.message || 'Something went wrong';
       });
   }
 });
 
-export const { clearOrder } = orderNumberSlice.actions;
 export default orderNumberSlice.reducer;
