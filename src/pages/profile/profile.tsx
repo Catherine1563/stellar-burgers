@@ -1,12 +1,17 @@
 import { ProfileUI } from '@ui-pages';
 import { FC, SyntheticEvent, useEffect, useState } from 'react';
+import { fetchUser } from '../../slices/profileSlice';
+import { updateUserApi } from '@api';
+import { useDispatch, useSelector } from '../../services/store';
 
 export const Profile: FC = () => {
   /** TODO: взять переменную из стора */
-  const user = {
-    name: '',
-    email: ''
-  };
+  const user = useSelector((state) => state.profile.user);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchUser());
+  }, [dispatch]);
 
   const [formValue, setFormValue] = useState({
     name: user.name,
@@ -27,8 +32,24 @@ export const Profile: FC = () => {
     formValue.email !== user?.email ||
     !!formValue.password;
 
-  const handleSubmit = (e: SyntheticEvent) => {
+  const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
+    try {
+      const response = await updateUserApi({
+        name: formValue.name,
+        email: formValue.email,
+        ...(formValue.password && { password: formValue.password })
+      });
+
+      if (response && response.success) {
+        dispatch(fetchUser());
+      }
+    } catch (error) {
+      console.error(
+        'Произошла ошибка при обновлении данных пользователя:',
+        error
+      );
+    }
   };
 
   const handleCancel = (e: SyntheticEvent) => {

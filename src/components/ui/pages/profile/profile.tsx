@@ -35,6 +35,8 @@ export const ProfileUI: FC<ProfileUIProps> = ({
             errorText={''}
             size={'default'}
             icon={'EditIcon'}
+            onPointerEnterCapture={null}
+            onPointerLeaveCapture={null}
           />
         </div>
         <div className='pb-6'>
@@ -48,6 +50,8 @@ export const ProfileUI: FC<ProfileUIProps> = ({
             errorText={''}
             size={'default'}
             icon={'EditIcon'}
+            onPointerEnterCapture={null}
+            onPointerLeaveCapture={null}
           />
         </div>
         <div className='pb-6'>
@@ -61,6 +65,8 @@ export const ProfileUI: FC<ProfileUIProps> = ({
             errorText={''}
             size={'default'}
             icon={'EditIcon'}
+            onPointerEnterCapture={null}
+            onPointerLeaveCapture={null}
           />
         </div>
         {isFormChanged && (
@@ -73,7 +79,12 @@ export const ProfileUI: FC<ProfileUIProps> = ({
             >
               Отменить
             </Button>
-            <Button type='primary' size='medium' htmlType='submit'>
+            <Button
+              type='primary'
+              size='medium'
+              htmlType='submit'
+              onSubmit={handleSubmit}
+            >
               Сохранить
             </Button>
           </div>

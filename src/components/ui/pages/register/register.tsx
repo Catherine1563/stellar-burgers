@@ -37,6 +37,8 @@ export const RegisterUI: FC<RegisterUIProps> = ({
               error={false}
               errorText=''
               size='default'
+              onPointerEnterCapture={null}
+              onPointerLeaveCapture={null}
             />
           </div>
           <div className='pb-6'>
@@ -49,6 +51,8 @@ export const RegisterUI: FC<RegisterUIProps> = ({
               error={false}
               errorText=''
               size={'default'}
+              onPointerEnterCapture={null}
+              onPointerLeaveCapture={null}
             />
           </div>
           <div className='pb-6'>
@@ -59,7 +63,12 @@ export const RegisterUI: FC<RegisterUIProps> = ({
             />
           </div>
           <div className={`pb-6 ${styles.button}`}>
-            <Button type='primary' size='medium' htmlType='submit'>
+            <Button
+              type='primary'
+              size='medium'
+              htmlType='submit'
+              onSubmit={handleSubmit}
+            >
               Зарегистрироваться
             </Button>
           </div>
