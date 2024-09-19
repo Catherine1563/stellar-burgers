@@ -11,8 +11,8 @@ export const IngredientDetails: FC = () => {
     (state) => state.ingredients
   );
   const dispatch = useDispatch();
-  const { selectedIngredient, isIngredientsLoading } = useSelector(
-    (state) => state.ingredient_modal
+  const selectedIngredient = useSelector(
+    (state) => state.ingredient_modal.selectedIngredient
   );
 
   const allIngredients = useMemo(
@@ -26,7 +26,7 @@ export const IngredientDetails: FC = () => {
     }
   }, [id, allIngredients, dispatch]);
 
-  if (isLoading || isIngredientsLoading || !selectedIngredient) {
+  if (isLoading || !selectedIngredient) {
     return <Preloader />;
   }
 

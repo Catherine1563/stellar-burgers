@@ -7,7 +7,6 @@ interface feedModalState {
     total: number;
     totalToday: number;
   };
-  isLoadingFeed: boolean;
   error: string | null;
 }
 
@@ -17,7 +16,6 @@ const initialState: feedModalState = {
     total: 0,
     totalToday: 0
   },
-  isLoadingFeed: false,
   error: null
 };
 
@@ -25,9 +23,6 @@ const feedModalSlice = createSlice({
   name: 'feed_modal',
   initialState,
   reducers: {
-    setSelectedFeed(state, action: PayloadAction<TOrder | null>) {
-      state.orderFeed = action.payload;
-    },
     selectFeedByNumber(
       state,
       action: PayloadAction<{ index: number; orders: TOrder[] }>
@@ -40,5 +35,5 @@ const feedModalSlice = createSlice({
   }
 });
 
-export const { setSelectedFeed, selectFeedByNumber } = feedModalSlice.actions;
+export const { selectFeedByNumber } = feedModalSlice.actions;
 export default feedModalSlice.reducer;

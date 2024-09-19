@@ -3,13 +3,11 @@ import { TOrder } from '@utils-types';
 
 interface profileModalState {
   orderProfileModal: TOrder | null;
-  isLoadingFeed: boolean;
   error: string | null;
 }
 
 const initialState: profileModalState = {
   orderProfileModal: null,
-  isLoadingFeed: false,
   error: null
 };
 

@@ -18,7 +18,7 @@ const initialState: feedState = {
     total: 0,
     totalToday: 0
   },
-  isOrdersLoading: false,
+  isOrdersLoading: true,
   error: null
 };
 
@@ -40,15 +40,15 @@ const addFeedSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchFeed.pending, (state) => {
-        state.isOrdersLoading = false;
+        state.isOrdersLoading = true;
         state.error = null;
       })
       .addCase(fetchFeed.fulfilled, (state, action) => {
-        state.isOrdersLoading = true;
         const { orders, feed } = action.payload;
         state.ordersFeed = orders;
         state.feed.total = feed.total;
         state.feed.totalToday = feed.totalToday;
+        state.isOrdersLoading = false;
       })
       .addCase(fetchFeed.rejected, (state, action) => {
         state.isOrdersLoading = false;

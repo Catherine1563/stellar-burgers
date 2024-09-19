@@ -14,7 +14,7 @@ const initialState: IngredientsState = {
   buns: [],
   mains: [],
   sauces: [],
-  isLoading: false,
+  isLoading: true,
   error: null
 };
 
@@ -37,11 +37,11 @@ const allIngredientsCategorySlice = createSlice({
         state.error = null;
       })
       .addCase(fetchIngredients.fulfilled, (state, action) => {
-        state.isLoading = false;
         const ingredients = action.payload as TIngredient[];
         state.buns = ingredients.filter((item) => item.type === 'bun');
         state.mains = ingredients.filter((item) => item.type === 'main');
         state.sauces = ingredients.filter((item) => item.type === 'sauce');
+        state.isLoading = false;
       })
       .addCase(fetchIngredients.rejected, (state, action) => {
         state.isLoading = false;

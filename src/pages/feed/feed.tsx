@@ -18,7 +18,7 @@ export const Feed: FC = () => {
     }
   }, [dispatch, ordersFeed.length]);
 
-  if (!isOrdersLoading) {
+  if (isOrdersLoading) {
     return <Preloader />;
   }
 

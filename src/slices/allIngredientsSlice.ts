@@ -10,7 +10,7 @@ interface allIngredientsState {
 
 const initialState: allIngredientsState = {
   ingredients: [],
-  isIngredientsLoading: false,
+  isIngredientsLoading: true,
   error: null
 };
 
@@ -33,9 +33,9 @@ const allIngredientsSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchAllIngredients.fulfilled, (state, action) => {
-        state.isIngredientsLoading = false;
         const allIngredients = action.payload as TIngredient[];
         state.ingredients = allIngredients;
+        state.isIngredientsLoading = false;
       })
       .addCase(fetchAllIngredients.rejected, (state, action) => {
         state.isIngredientsLoading = false;
