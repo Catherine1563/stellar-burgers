@@ -10,7 +10,7 @@ interface ordersProfileState {
 
 const initialState: ordersProfileState = {
   ordersProfile: [],
-  isOrdersLoading: false,
+  isOrdersLoading: true,
   error: null
 };
 

@@ -27,11 +27,7 @@ export const fetchUser = createAsyncThunk('auth/user/fetchUser', async () => {
 const profileSlice = createSlice({
   name: 'profile',
   initialState,
-  reducers: {
-    updateUser(state, action: PayloadAction<TUser>) {
-      state.user = action.payload;
-    }
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchUser.pending, (state) => {
@@ -45,7 +41,7 @@ const profileSlice = createSlice({
       })
       .addCase(fetchUser.rejected, (state, action) => {
         state.loading = false;
-        state.error = (action.payload as string) || 'Something went wrong';
+        state.error = action.error.message || 'Something went wrong';
       });
   }
 });

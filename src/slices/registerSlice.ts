@@ -6,14 +6,12 @@ import { setCookie } from '../utils/cookie';
 interface RegisterState {
   user: TUser | null;
   success: boolean;
-  isRegisSuccess: boolean;
   error: string | null;
 }
 
 const initialState: RegisterState = {
   user: null,
   success: false,
-  isRegisSuccess: false,
   error: null
 };
 
@@ -35,25 +33,21 @@ const registerSlice = createSlice({
   initialState,
   reducers: {
     resetRegisState: (state) => {
-      state.isRegisSuccess = false;
       state.success = false;
     }
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchRegisterUser.pending, (state) => {
-        state.isRegisSuccess = false;
         state.success = false;
         state.error = null;
       })
       .addCase(fetchRegisterUser.fulfilled, (state, action) => {
         state.user = action.payload.user;
         state.success = action.payload.success;
-        state.isRegisSuccess = true;
       })
       .addCase(fetchRegisterUser.rejected, (state, action) => {
         state.success = false;
-        state.isRegisSuccess = false;
         state.error = action.error.message || 'Something went wrong';
       });
   }

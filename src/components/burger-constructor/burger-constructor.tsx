@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useMemo } from 'react';
 import { BurgerConstructorUI } from '@ui';
 import { resetIngredients } from '../../slices/addIngredientSlice';
 import {
@@ -8,7 +8,6 @@ import {
 } from '../../slices/orderSlice';
 import { useDispatch, useSelector } from '../../services/store';
 import { useNavigate } from 'react-router-dom';
-import { checkTokens } from '../../slices/isLoggedInSlice';
 
 export const BurgerConstructor: FC = () => {
   /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора */
